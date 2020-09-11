@@ -2,9 +2,9 @@
 
 The intention of the plugin is to make working with Lando database containers and external tools a little easier. The plugin comes with three Lando 'tasks':
 
-1. lando dbport
-2. lando workbench
-3. lando dbeaver
+1. `lando dbport` - prints the external port and copies it to the clipboard
+2. `lando workbench` - opens a connection using the MySQL Workbench GUI
+3. `lando dbeaver` - opens a connection using the dbeaver GUI
 
 Each of these takes an optional `-s [service]` parameter where `[service]` is the name of your database service you want to interact with. For example:
 
