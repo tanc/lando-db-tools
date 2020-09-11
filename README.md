@@ -12,6 +12,34 @@ Each of these takes an optional `-s [service]` parameter where `[service]` is th
 lando dbport -s database
 ```
 
+## Installation
+
+Until plugins are easily installed (coming soon!) in Lando you will need to clone this repository into the correct location and run `yarn`. Currently the best place to clone into is `~/.lando/plugins`. This directory may not exist yet so you will need to:
+
+```
+mkdir -p ~/.lando/plugins
+```
+
+Then you can clone:
+
+```
+git clone git@github.com:tanc/lando-db-tools.git db-tools
+```
+
+Change directory:
+
+```
+cd ~/.lando/plugins/db-tools
+```
+
+Install the needed node modules:
+
+```
+yarn
+```
+
+If you have a currently running Lando project you'll need to restart it to have this plugin picked up. I haven't tested thoroughly but its possible you'll need to `lando rebuild`.
+
 ## 1. lando dbport
 
 The command lando dbport prints the external connection port for your database container. It will also copy that port number to your system clipboard so you can easily paste it into the settings of your GUI tool of choice.
