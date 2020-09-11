@@ -40,15 +40,17 @@ yarn
 
 If you have a currently running Lando project you'll need to restart it to have this plugin picked up. I haven't tested thoroughly but its possible you'll need to `lando rebuild`.
 
-## 1. lando dbport
+## Commands
+
+### 1. lando dbport
 
 The command lando dbport prints the external connection port for your database container. It will also copy that port number to your system clipboard so you can easily paste it into the settings of your GUI tool of choice.
 
-## 2. lando workbench
+### 2. lando workbench
 
 If you have the `mysql-workbench` GUI tool installed you can run `lando workbench` and have it open the GUI with a connection to your database already configured and open. The database password is copied to your clipboard ready to paste in.
 
-## 3. lando dbeaver
+### 3. lando dbeaver
 
 If you have the `dbeaver` GUI tool installed you can run `lando dbeaver` and have it open the GUI with a connection to your database already configured and open.
 
