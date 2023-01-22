@@ -43,7 +43,7 @@ module.exports = (lando) => ({
         lando.shell.sh(
           [
             "open",
-            `${$com}${creds.user}:${creds.password}@127.0.0.1:${external}?statusColor=007F3D&enviroment=local&name=${app._name}`,
+            `${$com}${creds.user}:${creds.password}@127.0.0.1:${external}/${creds.database}?statusColor=007F3D&enviroment=local&name=${app._name}`,
           ],
           {
             mode: "exec",
