@@ -5,6 +5,8 @@ The intention of the plugin is to make working with Lando database containers an
 1. `lando dbport` - prints the external port and copies it to the clipboard
 2. `lando workbench` - opens a connection using the MySQL Workbench GUI
 3. `lando dbeaver` - opens a connection using the dbeaver GUI
+4. `lando sequelpro` - opens a connection using the sequelpro GUI (Mac)
+5. `lando tableplus` - opens a connection using the tableplus GUI (Mac)
 
 Each of these takes an optional `-s [service]` parameter where `[service]` is the name of your database service you want to interact with. For example:
 
@@ -64,6 +66,14 @@ This has only been tested on Arch flavoured Linux. When dbeaver is installed on 
 export GTK_OVERLAY_SCROLLING=0
 /usr/lib/dbeaver/dbeaver "$@"
 ```
+
+### 3. lando sequelpro
+
+If you have the `sequelpro` GUI tool installed you can run `lando sequelpro` and have it open the GUI with a connection to your database already configured and open.
+
+### 4. lando sequelpro
+
+If you have the `tableplus` GUI tool installed you can run `lando tableplus` and have it open the GUI with a connection to your database already configured and open.
 
 ## Windows support
 
