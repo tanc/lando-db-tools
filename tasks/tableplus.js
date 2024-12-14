@@ -1,14 +1,12 @@
 "use strict";
 
 const _ = require("lodash");
-const clipboardy = require("clipboardy");
 const filterServices = require("../src/filter-services").filterServices;
 const dbServiceGet = require("../src/db-services").get;
-const fs = require("fs");
 
 module.exports = (lando) => ({
   command: "tableplus",
-  describe: "Opens the database in the Sequelpro GUI",
+  describe: "Opens the database in the TablePlus GUI",
   level: "app",
   options: _.merge({}, lando.cli.formatOptions(), {
     service: {
@@ -17,46 +15,57 @@ module.exports = (lando) => ({
       default: "database",
     },
   }),
-  run: (options) => {
-    const app = lando.getApp(options._app.root);
-    // Get services
-    app.opts = !_.isEmpty(options.service) ? { services: options.service } : {};
-    return app.init().then(() => {
-      const info = _.filter(app.info, (service) =>
-        filterServices(service.service, options.service)
+  run: async (options) => {
+    try {
+      const app = await lando.getApp(options._app.root);
+      // Set service filter options
+      const serviceFilter = !_.isEmpty(options.service) ? options.service : "database";
+      // Initialize app
+      await app.init();
+      // Get filtered services
+      const services = _.filter(app.info, (service) =>
+        filterServices(service.service, serviceFilter)
       );
-      const dbservice = dbServiceGet(app, info);
-      const random = Math.floor(Math.random() * 1000000);
-      const filename = `/tmp/docksal-sequelpro-${random}.spf`;
 
-      const external = dbservice.external_connection.port;
-      const creds = dbservice.creds;
-      const mysqlTypes = ["mariadb", "mysql", "postgre"];
-
-      if (mysqlTypes.some((v) => dbservice.type.includes(v))) {
-        let $com = "";
-        switch (dbservice.type) {
-          default:
-            $com = `${dbservice.type}://`;
-        }
-
-        lando.shell.sh(
-          [
-            "open",
-            `${$com}${creds.user}:${creds.password}@127.0.0.1:${external}/${creds.database}?statusColor=007F3D&enviroment=local&name=${app._name}`,
-          ],
-          {
-            mode: "exec",
-            detached: true,
-          }
-        );
-
+      if (_.isEmpty(services)) {
+        console.error("No matching database services found.");
         return;
+      }
+
+      // Get database service information
+      const dbService = dbServiceGet(app, services);
+      if (!dbService || !dbService.external_connection || !dbService.creds) {
+        console.error("Could not retrieve database connection details.");
+        return;
+      }
+
+      const { port: externalPort } = dbService.external_connection;
+      const { user, password, database } = dbService.creds;
+      const supportedDbTypes = ["mariadb", "mysql", "postgresql", "postgres"];
+
+      // Replace dbService.type with a valid database type
+      const validDbType = supportedDbTypes.find((type) => dbService.type.includes(type));
+
+      if (validDbType) {
+        const connectionUrl = `${validDbType}://${user}:${password}@127.0.0.1:${externalPort}/${database}?statusColor=007F3D&environment=local&name=${app.name}`;
+
+        const osType = process.platform;
+        if (osType === "darwin") {
+          const tablePlusAppPath = "/Applications/TablePlus.app/Contents/MacOS/TablePlus";
+          const setappPath = "/Applications/Setapp/TablePlus.app/Contents/MacOS/TablePlus";
+
+          const appPath = require("fs").existsSync(setappPath) ? setappPath : tablePlusAppPath;
+          lando.shell.sh(["open", connectionUrl, "-a", appPath], { mode: "exec", detached: true });
+        } else {
+          console.error("Unsupported operating system for TablePlus integration.");
+        }
       } else {
-        console.log(
+        console.error(
           "Currently only MySQL, Postgre and MariaDB connections are supported"
         );
       }
-    });
+    } catch (err) {
+      console.error("An error occurred while running the tableplus command:", err);
+    }
   },
 });

@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('lodash');
-const clipboardy = require('clipboardy');
 const filterServices = require('../src/filter-services').filterServices;
 const dbServiceGet = require('../src/db-services').get;
 
